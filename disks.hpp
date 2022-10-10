@@ -112,7 +112,14 @@ public:
   // Return true when this disk_state is fully sorted, with all light disks on
   // the left (low indices) and all dark disks on the right (high indices).
   bool is_sorted() const {
-      
+      for(size_t i = 0; i < total_count() - 1; i++)
+      {
+          if(_colors[i]== DISK_DARK && _colors[i+1] == DISK_LIGHT)  // 0 0 0 0 1 1 1 0
+          {
+            return false;
+          }  
+      }
+
       return true;
   }
 };
@@ -143,19 +150,54 @@ public:
 };
 
 // Algorithm that sorts disks using the alternate algorithm.
-sorted_disks sort_alternate(const disk_state& before) {
-	int numOfSwap = 0;                                                                      //record # of step swap
- 
-          }
+ sorted_disks sort_alternate(const disk_state& before) {
+  int numOfSwap = 0;
+  disk_state state = before;
 
+  for(int i = 0; i < 2*state.total_count(); i++)
+  {
+    int curIndex = 0;
+    while(curIndex + 1 < state.total_count())
+    {
+      if(state.get(curIndex) > state.get(curIndex + 1))
+      {
+        if(state.get(curIndex) == DISK_DARK && state.get(curIndex + 1) == DISK_LIGHT)
+        {
+           state.swap(curIndex);
+            numOfSwap++;
+        }
+      }
+      curIndex++;
+    }
+  }
+  
   return sorted_disks(disk_state(state), numOfSwap);
 }
 
 
 // Algorithm that sorts disks using the lawnmower algorithm.
 sorted_disks sort_lawnmower(const disk_state& before) {
-  	
-	  }
+    int numOfSwap = 0;
+    disk_state state = before;
+
+    for(int i = 0; i < state.total_count() / 2; i++)
+      {
+        int curIndex = 0;
+        while(curIndex + 1  <state.total_count())
+        {
+          if(state.get(curIndex) > state.get(curIndex + 1))
+          {
+            if(state.get(curIndex) == DISK_DARK && state.get(curIndex + 1) == DISK_LIGHT)
+            {
+              state.swap(curIndex);
+              numOfSwap++;
+            }
+          }
+          curIndex++;
+        }
+        
+      }
 
   return sorted_disks(disk_state(state), numOfSwap);
 }
+
